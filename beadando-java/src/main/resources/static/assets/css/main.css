@@ -2007,6 +2007,10 @@ input, select, textarea {
 		text-align: center;
 	}
 
+	#soap-section {
+		margin: 50px;
+	}
+
 	header p {
 		color: #999;
 		margin: 0 0 1.5em 0;
@@ -2683,6 +2687,10 @@ input, select, textarea {
 			}
 
 /* Button */
+
+    #final-button{
+		margin-top: 10px;
+	}
 
 	input[type="submit"],
 	input[type="reset"],

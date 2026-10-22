@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>MNB Devizaárfolyam</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="is-preload">
+<div id="wrapper">
+    <header id="header">
+        <a th:href="@{/}" class="logo">Főoldal</a>
+    </header>
+    <div id="main">
+        <section id="soap-section" class="post">
+            <form action="#" th:action="@{/soap}" method="post">
+                <div class="fields">
+                    <div class="field">
+                        <label for="currency">Deviza:</label>
+                        <select name="currency" id="currency">
+                            <option value="EUR" th:selected="${selectedCurrency == 'EUR'}">EUR</option>
+                            <option value="USD" th:selected="${selectedCurrency == 'USD'}">USD</option>
+                            <option value="GBP" th:selected="${selectedCurrency == 'GBP'}">GBP</option>
+                            <option value="CHF" th:selected="${selectedCurrency == 'CHF'}">CHF</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="startDate">Kezdő dátum:</label>
+                        <input type="date" id="startDate" name="startDate" th:value="${startDate}" required />
+                    </div>
+                    <div class="field">
+                        <label for="endDate">Befejező dátum:</label>
+                        <input type="date" id="endDate" name="endDate" th:value="${endDate}" required />
+                    </div>
+                </div>
+                <ul class="actions" id="final-button">
+                    <li><input type="submit" value="Lekérdezés és Grafikon" class="primary" /></li>
+                </ul>
+            </form>
+            <hr />
+            <div th:if="${rates != null and !rates.isEmpty()}">
+                <h3>Árfolyam grafikon (<span th:text="${selectedCurrency}"></span>)</h3>
+                <canvas id="rateChart" width="400" height="150"></canvas>
+
+                <h3 style="margin-top: 2rem;">Adatok táblázatban</h3>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Dátum</th>
+                        <th>Árfolyam (HUF)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="r : ${rates}">
+                        <td th:text="${r.date}"></td>
+                        <td th:text="${r.rate}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+    <footer id="footer">
+        <p>Kollár Máté - INEIN6 | Boros Szilárd - TPJES5</p>
+    </footer>
+</div>
+<script th:inline="javascript">
+    var rateList = /*[[${rates}]]*/ [];
+    if (rateList && rateList.length > 0) {
+        var labels = rateList.map(r => r.date);
+        var dataValues = rateList.map(r => r.rate);
+
+        var ctx = document.getElementById('rateChart').getContext('2d');
+        var rateChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Árfolyam (HUF)',
+                    data: dataValues,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 2,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+    }
+</script>
+</body>
+</html>
