@@ -5,6 +5,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
@@ -36,40 +37,65 @@ public class MnbService {
 
         try {
             String soapXml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-                    "<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
+                    "<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
+                    "xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " +
+                    "xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
                     "<soap:Body>" +
-                    "<GetCurrencyRates xmlns=\"http://www.mnb.hu/arfolyamok/\">" +
+                    "<GetExchangeRates xmlns=\"http://www.mnb.hu/webservices/\">" +
                     "<startDate>" + startDate + "</startDate>" +
                     "<endDate>" + endDate + "</endDate>" +
                     "<currencyNames>" + currency + "</currencyNames>" +
-                    "</GetCurrencyRates>" +
+                    "</GetExchangeRates>" +
                     "</soap:Body>" +
                     "</soap:Envelope>";
 
-            HttpClient client = HttpClient.newHttpClient();
+            HttpClient client = HttpClient.newBuilder()
+                    .followRedirects(HttpClient.Redirect.ALWAYS)
+                    .build();
+
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://www.mnb.hu/arfolyamok.asmx"))
                     .header("Content-Type", "text/xml; charset=utf-8")
-                    .header("SOAPAction", "http://www.mnb.hu/arfolyamok/IArfolyamService/GetCurrencyRates")
+                    .header("SOAPAction", "\"http://www.mnb.hu/webservices/GetExchangeRates\"")
+                    .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
                     .POST(HttpRequest.BodyPublishers.ofString(soapXml))
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             String xmlResponse = response.body();
 
+            if (xmlResponse == null || xmlResponse.trim().isEmpty()) {
+                return rates;
+            }
+
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(new InputSource(new StringReader(xmlResponse)));
 
-            NodeList rateNodes = doc.getElementsByTagName("Rate");
-            for (int i = 0; i < rateNodes.getLength(); i++) {
-                Element rateElement = (Element) rateNodes.item(i);
-                String date = rateElement.getAttribute("date");
-                String rateText = rateElement.getTextContent().replace(",", ".");
-                if (!rateText.isEmpty()) {
-                    double rateValue = Double.parseDouble(rateText);
-                    rates.add(new RateRecord(date, rateValue));
+            NodeList resultNodes = doc.getElementsByTagName("GetExchangeRatesResult");
+            String innerXml = null;
+            if (resultNodes.getLength() > 0) {
+                innerXml = resultNodes.item(0).getTextContent();
+            }
+
+            if (innerXml != null && !innerXml.trim().isEmpty()) {
+                Document innerDoc = builder.parse(new InputSource(new StringReader(innerXml)));
+                NodeList dayNodes = innerDoc.getElementsByTagName("Day");
+
+                for (int i = 0; i < dayNodes.getLength(); i++) {
+                    Element dayElement = (Element) dayNodes.item(i);
+                    String date = dayElement.getAttribute("date");
+
+                    NodeList rateNodes = dayElement.getElementsByTagName("Rate");
+                    if (rateNodes.getLength() > 0) {
+                        Element rateElement = (Element) rateNodes.item(0);
+                        String rateText = rateElement.getTextContent().replace(",", ".");
+                        if (!rateText.isEmpty()) {
+                            double rateValue = Double.parseDouble(rateText);
+                            rates.add(new RateRecord(date, rateValue));
+                        }
+                    }
                 }
             }
 

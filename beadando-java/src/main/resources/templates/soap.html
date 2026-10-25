@@ -40,7 +40,10 @@
             <hr />
             <div th:if="${rates != null and !rates.isEmpty()}">
                 <h3>Árfolyam grafikon (<span th:text="${selectedCurrency}"></span>)</h3>
-                <canvas id="rateChart" width="400" height="150"></canvas>
+
+                <div style="width: 100%; max-width: 800px; margin: 0 auto;">
+                    <canvas id="rateChart"></canvas>
+                </div>
 
                 <h3 style="margin-top: 2rem;">Adatok táblázatban</h3>
                 <table>
@@ -64,11 +67,18 @@
         <p>Kollár Máté - INEIN6 | Boros Szilárd - TPJES5</p>
     </footer>
 </div>
+
 <script th:inline="javascript">
-    var rateList = /*[[${rates}]]*/ [];
-    if (rateList && rateList.length > 0) {
-        var labels = rateList.map(r => r.date);
-        var dataValues = rateList.map(r => r.rate);
+    var ratesData = /*[[${rates}]]*/ [];
+
+    if (ratesData && ratesData.length > 0) {
+        var labels = [];
+        var dataValues = [];
+
+        for (var i = 0; i < ratesData.length; i++) {
+            labels.push(ratesData[i].date);
+            dataValues.push(ratesData[i].rate);
+        }
 
         var ctx = document.getElementById('rateChart').getContext('2d');
         var rateChart = new Chart(ctx, {
@@ -81,7 +91,8 @@
                     borderColor: 'rgba(75, 192, 192, 1)',
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
                     borderWidth: 2,
-                    fill: true
+                    fill: true,
+                    tension: 0.1
                 }]
             },
             options: {
@@ -89,6 +100,7 @@
             }
         });
     }
+    /*]]>*/
 </script>
 </body>
 </html>
