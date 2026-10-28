@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Számlainformációk</title>
+</head>
+<body>
+<h1>Account Summary Result</h1>
+
+<p th:text="'Account Summary: ' + ${summary}"></p>
+
+<div th:if="${error != null}">
+    <p style="color: red;" th:text="${error}"></p>
+</div>
+
+<br>
+<a th:href="@{/actual_prices}">Vissza az aktuális árakhoz</a>
+</body>
+</html>
