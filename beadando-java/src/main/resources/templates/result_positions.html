@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Nyitott Pozíciók</title>
+  <style>
+    table, th, td { border: 1px solid black; border-collapse: collapse; padding: 6px; }
+  </style>
+</head>
+<body>
+<h1>Open Positions</h1>
+<table>
+  <thead>
+  <tr>
+    <th>Trade ID</th>
+    <th>Instrument</th>
+    <th>Open Time</th>
+    <th>Units</th>
+    <th>Price</th>
+    <th>Unrealized P/L</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="trade : ${trades}">
+    <td th:text="${trade.id}"></td>
+    <td th:text="${trade.instrument}"></td>
+    <td th:text="${trade.openTime}"></td>
+    <td th:text="${trade.currentUnits}"></td>
+    <td th:text="${trade.price}"></td>
+    <td th:text="${trade.unrealizedPL}"></td>
+  </tr>
+  </tbody>
+</table>
+<br>
+<a th:href="@{/actual_prices}">Vissza</a>
+</body>
+</html>

@@ -64,7 +64,7 @@ public class ForexController {
             PricingGetResponse resp = ctx.pricing.get(request);
 
             for (ClientPrice price : resp.getPrices()) {
-                strOut += price + "<br>";
+                strOut += "Bid: " + price.getBids().get(0).getPrice() + " | Ask: " + price.getAsks().get(0).getPrice();
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -112,7 +112,7 @@ public class ForexController {
 
             InstrumentCandlesResponse resp = ctx.instrument.candles(request);
             for (Candlestick candle : resp.getCandles()) {
-                strOut += candle.getTime() + "\t" + candle.getMid().getC() + ";<br>";
+                strOut += "<br>" + candle.getTime().toString().split("T")[0] + ": " +candle.getMid().getC().toString();
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -135,6 +135,7 @@ public class ForexController {
     public String open_position2(@ModelAttribute MessageOpenPosition messageOpenPosition, Model model) {
         Context ctx = new Context(Config.URL, Config.TOKEN);
         String strOut;
+        String price = "";
 
         try {
             InstrumentName instrument = new InstrumentName(messageOpenPosition.getInstrument());
@@ -146,34 +147,29 @@ public class ForexController {
 
             OrderCreateResponse response = ctx.order.create(request);
             strOut = "tradeId: " + response.getOrderFillTransaction().getId();
+            price = response.getOrderFillTransaction().getPrice().toString();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
         model.addAttribute("instr", messageOpenPosition.getInstrument());
         model.addAttribute("units", messageOpenPosition.getUnits());
+        model.addAttribute("price", price);
         model.addAttribute("id", strOut);
         return "result_open_position";
     }
 
     //forex-poz
     @GetMapping("/positions")
-    @ResponseBody
-    public String positions() {
+    public String positions(Model model) {
         Context ctx = new Context(Config.URL, Config.TOKEN);
-        String strOut = "Open positions:<br>";
         try {
             List<Trade> trades = ctx.trade.listOpen(Config.ACCOUNTID).getTrades();
-            for (Trade trade : trades) {
-                strOut += trade.getId() + ", " + trade.getInstrument() + ", " + trade.getOpenTime()
-                        + ", " + trade.getCurrentUnits() + ", " + trade.getPrice() + ", "
-                        + trade.getUnrealizedPL() + "<br>";
-            }
-            return strOut;
+            model.addAttribute("trades", trades);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return "result_positions";
     }
 
     //forex-zar

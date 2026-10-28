@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html lang="hu" xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><title>Pozíció Lezárva</title></head>
-<body>
-<h1>Closed position</h1>
-<p th:text="${tradeId}"></p>
-<a th:href="@{'/close_position'}">Close another position</a>
-</body>
+    <html lang="hu" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Pozíció Lezárva</title>
+    </head>
+    <body>
+        <h1>Closed position</h1>
+        <p th:text="${tradeId}"></p>
+        <a th:href="@{'/close_position'}">Close another position</a>
+    </body>
 </html>

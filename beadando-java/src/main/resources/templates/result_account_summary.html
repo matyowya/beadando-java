@@ -5,9 +5,20 @@
     <title>Számlainformációk</title>
 </head>
 <body>
-<h1>Account Summary Result</h1>
+<h1>Account Summary</h1>
 
-<p th:text="'Account Summary: ' + ${summary}"></p>
+<div th:if="${summary != null}">
+    <p><b>Account ID:</b> <span th:text="${summary.id}"></span></p>
+    <p><b>Alias:</b> <span th:text="${summary.alias}"></span></p>
+    <p><b>Currency:</b> <span th:text="${summary.currency}"></span></p>
+    <p><b>Balance:</b> <span th:text="${summary.balance}"></span></p>
+    <p><b>NAV (Net Asset Value):</b> <span th:text="${summary.NAV}"></span></p>
+    <p><b>Unrealized P/L:</b> <span th:text="${summary.unrealizedPL}"></span></p>
+    <p><b>Open Trades Count:</b> <span th:text="${summary.openTradeCount}"></span></p>
+    <p><b>Open Positions Count:</b> <span th:text="${summary.openPositionCount}"></span></p>
+    <p><b>Margin Used:</b> <span th:text="${summary.marginUsed}"></span></p>
+    <p><b>Margin Available:</b> <span th:text="${summary.marginAvailable}"></span></p>
+</div>
 
 <div th:if="${error != null}">
     <p style="color: red;" th:text="${error}"></p>
