@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Historikus Árak Eredmény</title>
+</head>
+<body>
+<h1>Historical prices result</h1>
+<p th:text="'Instrument: ' + ${instr}"></p>
+<p th:text="'Granularity: ' + ${granularity}"></p>
+<p th:utext="'Historical prices: ' + ${price}"></p>
+<a th:href="@{'/hist_prices'}">Select another instrument</a>
+</body>
+</html>

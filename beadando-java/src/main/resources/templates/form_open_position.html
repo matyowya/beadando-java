@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Pozíció Nyitás</title></head>
+<body>
+<h1>Select instrument and size for Open position</h1>
+<form action="#" th:action="@{/open_position}" th:object="${par}" method="post">
+  <select name="instruments" th:field="*{instrument}">
+    <option value="EUR_USD">EUR_USD</option>
+    <option value="USD_CHF">USD_CHF</option>
+    <option value="GBP_USD">GBP_USD</option>
+    <option value="USD_JPY">USD_JPY</option>
+  </select>
+  <input type="number" id="quantity" name="size" min="-100" max="100" th:field="*{units}">
+  <input type="submit" value="Submit">
+</form>
+</body>
+</html>

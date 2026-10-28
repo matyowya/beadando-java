@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Pozíció Nyitva</title></head>
+<body>
+<h1>Position opened</h1>
+<p th:text="'Instrument: ' + ${instr}"></p>
+<p th:text="'Units: ' + ${units}"></p>
+<p th:text="${id}"></p>
+<a th:href="@{'/open_position'}">Open another position</a>
+</body>
+</html>

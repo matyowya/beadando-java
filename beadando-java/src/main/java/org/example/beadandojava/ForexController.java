@@ -48,7 +48,7 @@ public class ForexController {
     @GetMapping("/actual_prices")
     public String actual_prices(Model model) {
         model.addAttribute("par", new MessageActPrice());
-        return "";
+        return "form_actual_prices";
     }
 
     @PostMapping("/actual_prices")
@@ -72,14 +72,14 @@ public class ForexController {
 
         model.addAttribute("instr", messageActPrice.getInstrument());
         model.addAttribute("price", strOut);
-        return "";
+        return "result_actual_prices";
     }
 
     //forex-histár
     @GetMapping("/hist_prices")
     public String hist_prices(Model model) {
         model.addAttribute("par", new MessageHistPrice());
-        return "";
+        return "form_hist_prices";
     }
 
     @PostMapping("/hist_prices")
@@ -121,14 +121,14 @@ public class ForexController {
         model.addAttribute("instr", messageHistPrice.getInstrument());
         model.addAttribute("granularity", messageHistPrice.getGranularity());
         model.addAttribute("price", strOut);
-        return "";
+        return "result_hist_prices";
     }
 
     //forex-nyit
     @GetMapping("/open_position")
     public String open_position(Model model) {
-        model.addAttribute("param", new MessageOpenPosition());
-        return "";
+        model.addAttribute("par", new MessageOpenPosition());
+        return "form_open_position";
     }
 
     @PostMapping("/open_position")
@@ -153,7 +153,7 @@ public class ForexController {
         model.addAttribute("instr", messageOpenPosition.getInstrument());
         model.addAttribute("units", messageOpenPosition.getUnits());
         model.addAttribute("id", strOut);
-        return "";
+        return "result_open_position";
     }
 
     //forex-poz
@@ -179,7 +179,7 @@ public class ForexController {
     //forex-zar
     @GetMapping("/close_position")
     public String close_position(Model model) {
-        model.addAttribute("param", new MessageClosePosition());
+        model.addAttribute("par", new MessageClosePosition());
         return "form_close_position";
     }
 

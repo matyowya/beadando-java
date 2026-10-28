@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<!--* @thymesVar id="param" type="org.example.beadandojava.ForexController.MessageClosePosition" *-->
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Pozíció Zárás</title></head>
+<body>
+<h1>Enter tradeId for Close position</h1>
+<form action="#" th:action="@{/close_position}" th:object="${par}" method="post">
+    <input type="number" th:field="*{tradeId}">
+    <input type="submit" value="Submit">
+</form>
+</body>
+</html>
